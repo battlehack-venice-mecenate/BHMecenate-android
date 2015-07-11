@@ -9,13 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.battlehack_venice.lib.ItemAdapter;
-import com.battlehack_venice.lib.Monument;
+import com.battlehack_venice.lib.model.Monument;
 import com.battlehack_venice.lib.utils.ImageLoader;
 import com.battlehack_venice.mecenate.Application;
 import com.battlehack_venice.mecenate.BaseActivity;
 import com.battlehack_venice.mecenate.R;
 import com.battlehack_venice.mecenate.monument.MonumentActivity;
-import com.bumptech.glide.Glide;
 
 import javax.inject.Inject;
 

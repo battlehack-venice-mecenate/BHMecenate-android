@@ -1,4 +1,4 @@
-package com.battlehack_venice.lib;
+package com.battlehack_venice.lib.model;
 
 import com.battlehack_venice.lib.api.ApiResponseJsonParser;
 

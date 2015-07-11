@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.battlehack_venice.lib.Donation;
-import com.battlehack_venice.lib.Monument;
+import com.battlehack_venice.lib.model.Donation;
+import com.battlehack_venice.lib.model.Monument;
 import com.battlehack_venice.lib.api.ApiClient;
 import com.battlehack_venice.lib.api.ApiReponseStringParser;
 import com.battlehack_venice.lib.api.ApiResponseEntityParser;
@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -63,6 +64,7 @@ public class MonumentActivity extends BaseActivity
     private Monument _monument;
     private String _ppClientToken;
     private int _amount; // shit
+    private Subscription _subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -78,6 +80,17 @@ public class MonumentActivity extends BaseActivity
         }
     }
 
+    @Override
+    protected void onDestroy()
+    {
+        if (this._subscription != null) {
+            this._subscription.unsubscribe();
+            this._subscription = null;
+        }
+
+        super.onDestroy();
+    }
+
     private void _hydrate(Monument monument)
     {
         if (monument == null) {
@@ -89,7 +102,7 @@ public class MonumentActivity extends BaseActivity
         this._name.setText(monument.getName());
         this._description.setText(monument.getDescription());
         this._imageLoader.loadImage(monument.getImageUrl(), this._coverImage);
-        this._donations.setText(monument.getTotalDonations() > 0 ? String.format("Collected %.2f", monument.getTotalDonations()/100.0f): "No donations yet.");
+        this._donations.setText(monument.getTotalDonations() > 0 ? String.format("Collected %.2f", monument.getTotalDonations() / 100.0f) : "No donations yet. Be the first!");
 
         this._preparePaypalTransaction();
     }
@@ -100,7 +113,7 @@ public class MonumentActivity extends BaseActivity
         _button2.setEnabled(false);
         _button3.setEnabled(false);
 
-        this._apiClient.get("/client_token", null, new ApiReponseStringParser("client_token"))
+        this._subscription = this._apiClient.get("/client_token", null, new ApiReponseStringParser("client_token"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>()
@@ -168,11 +181,7 @@ public class MonumentActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (requestCode != PAYMENT_REQUEST) {
-            return;
-        }
-
-        if (getIntent() == null) {
+        if (requestCode != PAYMENT_REQUEST || data == null) {
             return;
         }
 
@@ -195,7 +204,7 @@ public class MonumentActivity extends BaseActivity
 
             default:
                 Log.i("onActivityResult", "" + resultCode + " " + data);
-                Toast.makeText(MonumentActivity.this, "Something went wrong... Badly", Toast.LENGTH_LONG).show();
+                Toast.makeText(MonumentActivity.this, "Something went wrong...", Toast.LENGTH_LONG).show();
                 break;
         }
     }
@@ -206,7 +215,7 @@ public class MonumentActivity extends BaseActivity
         params.put("payment_method_nonce", nonce);
         params.put("amount_in_cents", "" + money * 100);
 
-        this._apiClient.post("/pois/" + poiId + "/donations", null, params, new ApiResponseEntityParser<Donation>(Donation.PARSER, "donation"))
+        this._subscription = this._apiClient.post("/pois/" + poiId + "/donations", null, params, new ApiResponseEntityParser<Donation>(Donation.PARSER, "donation"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Donation>()

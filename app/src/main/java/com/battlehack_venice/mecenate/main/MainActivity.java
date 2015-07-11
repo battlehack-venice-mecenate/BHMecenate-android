@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.battlehack_venice.lib.Monument;
+import com.battlehack_venice.lib.model.Monument;
 import com.battlehack_venice.lib.api.ApiClient;
 import com.battlehack_venice.lib.api.ApiResponseListParser;
 import com.battlehack_venice.mecenate.Application;

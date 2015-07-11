@@ -60,3 +60,9 @@
 # Rx
 #
 -dontwarn sun.misc.Unsafe
+
+#
+# Paypal
+#
+-dontwarn com.google.android.gms.**
+-dontwarn android.support.v4.**

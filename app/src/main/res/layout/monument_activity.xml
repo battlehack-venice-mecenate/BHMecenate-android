@@ -33,12 +33,46 @@
             tools:text="bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla"
             />
 
-        <Button
-            android:id="@+id/monument_button"
+        <TextView
+            android:id="@+id/monument_donations"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="I want to donate!"/>
+            style="@style/MonumentText.Description"
+            tools:text="Collected X €"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp">
+
+            <Button
+                android:id="@+id/monument_button_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="1€"/>
+
+            <Button
+                android:id="@+id/monument_button_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="5€"/>
+            <Button
+                android:id="@+id/monument_button_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="10€"/>
+        </LinearLayout>
 
     </LinearLayout>
 

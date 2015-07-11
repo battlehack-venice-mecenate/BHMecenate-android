@@ -9,18 +9,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.battlehack_venice.lib.Donation;
 import com.battlehack_venice.lib.Monument;
 import com.battlehack_venice.lib.api.ApiClient;
-import com.battlehack_venice.lib.api.ApiResponseEntityParser;
-import com.battlehack_venice.lib.api.ApiResponseTextParser;
 import com.battlehack_venice.lib.api.ApiReponseStringParser;
+import com.battlehack_venice.lib.api.ApiResponseEntityParser;
 import com.battlehack_venice.lib.utils.ImageLoader;
 import com.battlehack_venice.mecenate.Application;
 import com.battlehack_venice.mecenate.BaseActivity;
 import com.battlehack_venice.mecenate.R;
 import com.braintreepayments.api.dropin.BraintreePaymentActivity;
+import com.braintreepayments.api.dropin.Customization;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -44,15 +46,23 @@ public class MonumentActivity extends BaseActivity
     TextView _name;
     @InjectView(R.id.monument_description)
     TextView _description;
-    @InjectView(R.id.monument_button)
-    Button _button;
+    @InjectView(R.id.monument_button_1)
+    Button _button1;
+    @InjectView(R.id.monument_button_2)
+    Button _button2;
+    @InjectView(R.id.monument_button_3)
+    Button _button3;
+    @InjectView(R.id.monument_donations)
+    TextView _donations;
 
     @Inject
     ImageLoader _imageLoader;
     @Inject
     ApiClient _apiClient;
 
+    private Monument _monument;
     private String _ppClientToken;
+    private int _amount; // shit
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -74,15 +84,22 @@ public class MonumentActivity extends BaseActivity
             return;
         }
 
+        this._monument = monument;
+
         this._name.setText(monument.getName());
         this._description.setText(monument.getDescription());
         this._imageLoader.loadImage(monument.getImageUrl(), this._coverImage);
+        this._donations.setText(monument.getTotalDonations() > 0 ? String.format("Collected %.2f", monument.getTotalDonations()/100.0f): "No donations yet.");
 
-        this._initPaypal();
+        this._preparePaypalTransaction();
     }
 
-    private void _initPaypal()
+    private void _preparePaypalTransaction()
     {
+        _button1.setEnabled(false);
+        _button2.setEnabled(false);
+        _button3.setEnabled(false);
+
         this._apiClient.get("/client_token", null, new ApiReponseStringParser("client_token"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -91,7 +108,9 @@ public class MonumentActivity extends BaseActivity
                     @Override
                     public void onCompleted()
                     {
-                        _button.setEnabled(true);
+                        _button1.setEnabled(true);
+                        _button2.setEnabled(true);
+                        _button3.setEnabled(true);
                     }
 
                     @Override
@@ -109,18 +128,39 @@ public class MonumentActivity extends BaseActivity
                 });
     }
 
-    @OnClick(R.id.monument_button)
-    void _onButtonClick(View v)
+    @OnClick(R.id.monument_button_1)
+    void _onButton1Click(View v)
     {
-        Intent intent = new Intent(this, BraintreePaymentActivity.class);
-        intent.putExtra(BraintreePaymentActivity.EXTRA_CLIENT_TOKEN, this._ppClientToken);
+        this._pay(1);
+    }
 
-        /*
+    @OnClick(R.id.monument_button_2)
+    void _onButton2Click(View v)
+    {
+        this._pay(5);
+    }
+
+    @OnClick(R.id.monument_button_3)
+    void _onButton3Click(View v)
+    {
+        this._pay(10);
+    }
+
+    private void _pay(int amount)
+    {
+        Log.i("PAYMENT", "request payment of " + amount + " bucs");
+        this._amount = amount;
+
+        Intent intent = new Intent(this, BraintreePaymentActivity.class)
+                .putExtra(BraintreePaymentActivity.EXTRA_CLIENT_TOKEN, this._ppClientToken);
+
         Customization customization = new Customization.CustomizationBuilder()
-                .amount(1)
+                .primaryDescription("" + this._monument.getName())
+                .secondaryDescription("Contribute for repair this monument")
+                .amount(NumberFormat.getCurrencyInstance().format(amount))
+                .submitButtonText("Donate")
                 .build();
         intent.putExtra(BraintreePaymentActivity.EXTRA_CUSTOMIZATION, customization);
-        */
 
         startActivityForResult(intent, PAYMENT_REQUEST);
     }
@@ -136,12 +176,10 @@ public class MonumentActivity extends BaseActivity
             return;
         }
 
-        Monument monument = (Monument) getIntent().getSerializableExtra(EXTRA_MONUMENT);
-
         switch (resultCode) {
             case BraintreePaymentActivity.RESULT_OK:
                 String paymentMethodNonce = data.getStringExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
-                _sendPaymentNonceToServer(monument.getId(), paymentMethodNonce, 100);
+                _sendPaymentNonceToServer(this._monument.getId(), paymentMethodNonce, this._amount);
                 break;
 
             case BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR:
@@ -162,33 +200,44 @@ public class MonumentActivity extends BaseActivity
         }
     }
 
-    private void _sendPaymentNonceToServer(long poiId, String nonce, int cents)
+    private void _sendPaymentNonceToServer(long poiId, String nonce, int money)
     {
         HashMap<String, String> params = new HashMap<>();
         params.put("payment_method_nonce", nonce);
-        params.put("amount_in_cents", "" + cents);
+        params.put("amount_in_cents", "" + money * 100);
 
-        this._apiClient.post("/pois/"+poiId+"/donations", null, params, new ApiResponseTextParser())
+        this._apiClient.post("/pois/" + poiId + "/donations", null, params, new ApiResponseEntityParser<Donation>(Donation.PARSER, "donation"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>()
+                .subscribe(new Subscriber<Donation>()
                 {
                     @Override
                     public void onCompleted()
                     {
                         Log.i("PAYMENT", "onCompleted");
+
+                        Toast.makeText(MonumentActivity.this, "Thanks for donating!", Toast.LENGTH_SHORT).show();
+
+                        _hydrate(_monument);
+                        _preparePaypalTransaction();
                     }
 
                     @Override
                     public void onError(Throwable e)
                     {
                         Log.e("PAYMENT", e.getMessage(), e);
+
+                        Toast.makeText(MonumentActivity.this, "Something went wrong, sorry!", Toast.LENGTH_LONG).show();
+
+                        _preparePaypalTransaction();
                     }
 
                     @Override
-                    public void onNext(String s)
+                    public void onNext(Donation donation)
                     {
-                        Log.i("PAYMENT", "onNext " + s);
+                        _monument.addDonation(donation.getAmount());
+
+                        Log.i("PAYMENT", "onNext " + donation.getAmount());
                     }
                 });
     }

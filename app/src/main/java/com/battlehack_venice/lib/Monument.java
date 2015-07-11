@@ -1,13 +1,38 @@
 package com.battlehack_venice.lib;
 
+import com.battlehack_venice.lib.api.ApiResponseJsonParser;
+
+import org.json.JSONObject;
+
+import java.io.Serializable;
+
 /**
  * Created by alex on 11/07/15.
  */
-public class Monument
+public class Monument implements Serializable
 {
+    public static final ApiResponseJsonParser<Monument> PARSER = new ApiResponseJsonParser<Monument>()
+    {
+        @Override
+        public Monument parse(JSONObject object)
+        {
+            try {
+                return new Monument(object.getLong("id"))
+                        .setName(object.getString("name"))
+                        .setDescription(object.getString("description"))
+                        .setImageUrl(object.getString("image_url"));
+
+            } catch (Exception e) {
+                return null;
+            }
+        }
+    };
+    private static final long serialVersionUID = 1L;
+
     private final long _id;
     private String _name;
     private String _imageUrl;
+    private String _description;
 
     public Monument(long id)
     {
@@ -54,5 +79,16 @@ public class Monument
     public boolean equals(Monument o)
     {
         return this.getId() == o.getId();
+    }
+
+    public String getDescription()
+    {
+        return this._description;
+    }
+
+    public Monument setDescription(String description)
+    {
+        this._description = description;
+        return this;
     }
 }

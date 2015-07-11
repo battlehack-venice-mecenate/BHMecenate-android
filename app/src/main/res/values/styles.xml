@@ -1,8 +1,62 @@
 <resources>
 
+    <!-- Main colors for the app -->
+    <color name="color_primary">@color/material_light_blue_800</color>
+    <color name="color_primary_dark">@color/material_light_blue_900</color>
+    <color name="accent">@color/material_orange_500</color>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+
+        <!-- Colors -->
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+
+    </style>
+
+
+    <style name="MoreButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/ic_more_vert_white_24dp</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="MonumentCardText">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/secondary_text_color_on_light</item>
+    </style>
+
+    <style name="MonumentCardMore" parent="MoreButton">
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
+    <style name="MonumentText">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="MonumentText.Title">
+        <item name="android:textColor">@color/primary_text_color_on_light</item>
+        <item name="android:textSize">@dimen/text_size_display_1</item>
+        <item name="android:fontFamily">@string/font_family_display_1</item>
+    </style>
+
+    <style name="MonumentText.Description">
+        <item name="android:textColor">@color/secondary_text_color_on_light</item>
+        <item name="android:textSize">@dimen/text_size_subhead</item>
+        <item name="android:fontFamily">@string/font_family_subhead</item>
     </style>
 
 </resources>

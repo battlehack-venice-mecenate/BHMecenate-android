@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Generic colors -->
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+
+    <!-- Colors defines by MD -->
+    <!-- https://www.google.com/design/spec/style/color.html#color-color-palette -->
+    <color name="black_opacity_87">#de000000</color>
+    <color name="black_opacity_54">#8a000000</color>
+    <color name="black_opacity_26">#42000000</color>
+    <color name="black_opacity_12">#0c000000</color>
+    <color name="black_opacity_0">#00000000</color>
+    <color name="white_opacity_87">#deffffff</color>
+    <color name="white_opacity_54">#8affffff</color>
+    <color name="white_opacity_26">#42ffffff</color>
+    <color name="white_opacity_12">#0cffffff</color>
+    <color name="white_opacity_0">#00ffffff</color>
+
+    <!-- Colors for MD theme -->
+    <!-- https://www.google.com/design/spec/style/color.html#color-themes -->
+    <color name="primary_background_light_color">@color/material_white</color> <!-- white -->
+    <color name="secondary_background_light_color">@color/material_grey_50</color> <!-- grey 50 -->
+
+    <color name="primary_item_dark_color">@color/material_grey_800</color>
+    <color name="secondary_background_dark_color">#303030</color>
+
+    <!-- TEXT -->
+    <color name="primary_text_color_on_light">@color/black_opacity_87</color>
+    <color name="secondary_text_color_on_light">@color/black_opacity_54</color>
+    <color name="primary_text_color_on_dark">@color/white_opacity_87</color>
+    <color name="secondary_text_color_on_dark">@color/white_opacity_54</color>
+
+    <!-- TOOLBAR -->
+    <color name="toolbar_background_color">@color/color_primary</color>
+    <color name="toolbar_text_color">@color/primary_text_color_on_dark</color>
+
+    <!-- TAB -->
+    <color name="tab_text_normal">#b2ffffff</color> <!-- MD: Unfocused tab color: #fff 70% -->
+    <color name="tab_text_selected">#ffffffff</color>
+
+    <!-- Lists -->
+    <color name="list_divider_color">@color/black_opacity_12</color>
+
+</resources>

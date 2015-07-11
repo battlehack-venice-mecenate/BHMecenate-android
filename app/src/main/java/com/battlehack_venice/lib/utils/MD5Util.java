@@ -1,6 +1,6 @@
 package com.battlehack_venice.lib.utils;
 
-import org.slf4j.LoggerFactory;
+import android.util.Log;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,7 +25,7 @@ public class MD5Util
             md5.update(string.getBytes());
             return MD5Util._toHex(md5.digest());
         } catch (NoSuchAlgorithmException exception) {
-            LoggerFactory.getLogger(MD5Util.class).error("Unable to generate MD5 hash: " + exception.getMessage(), exception);
+            Log.e("MD5util", "Unable to generate MD5 hash: " + exception.getMessage(), exception);
             return null;
         }
     }

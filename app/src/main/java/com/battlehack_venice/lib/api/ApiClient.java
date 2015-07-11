@@ -1,5 +1,7 @@
 package com.battlehack_venice.lib.api;
 
+import android.util.Log;
+
 import com.battlehack_venice.lib.utils.MD5Util;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -8,8 +10,6 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -20,7 +20,7 @@ import rx.Subscriber;
 
 public class ApiClient
 {
-    private static Logger LOGGER = LoggerFactory.getLogger(ApiClient.class);
+    private static final String LOG_TAG = "ApiClient";
 
     private final OkHttpClient _client;
     private final String _baseUrl;
@@ -124,13 +124,13 @@ public class ApiClient
                     }
 
                 } catch (IOException e) {
-                    LOGGER.error("API[" + request.tag() + "] I/O exception. Message: " + e.getMessage());
+                    Log.e(LOG_TAG, "API[" + request.tag() + "] I/O exception. Message: " + e.getMessage());
                     subscriber.onError(new ApiError(0, "Network error"));
                 } catch (JSONException e) {
-                    LOGGER.error("API[" + request.tag() + "] JSON exception. Message: " + e.getMessage() + ", body: " + body);
+                    Log.e(LOG_TAG, "API[" + request.tag() + "] JSON exception. Message: " + e.getMessage() + ", body: " + body);
                     subscriber.onError(new ApiError(500, "Unable to parse API response"));
                 } catch (Exception e) {
-                    LOGGER.error("API[" + request.tag() + "] Unknown exception. Message: " + e.getMessage(), e);
+                    Log.e(LOG_TAG, "API[" + request.tag() + "] Unknown exception. Message: " + e.getMessage(), e);
                     subscriber.onError(new ApiError(400, "An unexpected error occured while handling your request"));
                 }
             }

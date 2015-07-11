@@ -19,7 +19,7 @@ abstract public class ApiResponseJsonParser<T extends Object> implements ApiResp
      */
     public T parse(String data) throws JSONException
     {
-        return this.parse(new JSONObject(data).getJSONObject("response"));
+        return this.parse(new JSONObject(data));
     }
 
     /**

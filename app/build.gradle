@@ -22,7 +22,7 @@ android {
     buildTypes {
 
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -46,15 +46,9 @@ dependencies {
     compile "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     compile "com.android.support:support-v4:${SUPPORT_VERSION}"
     compile "com.android.support:design:${SUPPORT_VERSION}"
-    compile "com.android.support:palette-v7:${SUPPORT_VERSION}"
 
     // HTTP lib
     compile 'com.squareup.okhttp:okhttp:2.4.0'
-
-    // Logs
-    compile 'org.slf4j:slf4j-api:1.7.6'
-    compile "com.github.tony19:logback-android-core:${LOGBACK_VERSION}"
-    compile "com.github.tony19:logback-android-classic:${LOGBACK_VERSION}"
 
     // Image loader
     compile 'com.github.bumptech.glide:glide:3.6.0'
@@ -66,9 +60,9 @@ dependencies {
 
     // Code design
     compile 'com.jakewharton:butterknife:6.1.0'
+    compile 'io.reactivex:rxjava:1.0.4'
     compile 'io.reactivex:rxandroid:0.24.0'
     compile 'org.json:json:20140107'
-    compile 'io.reactivex:rxjava:1.0.4'
 
     apt 'com.google.dagger:dagger-compiler:2.0'
     provided 'org.glassfish:javax.annotation:10.0-b28'
@@ -77,6 +71,6 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
 
     // Paypal
-    compile 'com.braintreepayments.api:braintree:1.6.4'
-    compile 'com.google.android.gms:play-services:7.5.0'
+    //compile 'com.braintreepayments.api:braintree:1.6.4'
+    //compile 'com.google.android.gms:play-services:7.5.0'
 }

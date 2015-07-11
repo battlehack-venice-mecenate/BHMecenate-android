@@ -3,6 +3,7 @@ package com.battlehack_venice.mecenate;
 import android.content.Context;
 
 import com.battlehack_venice.lib.api.ApiClient;
+import com.battlehack_venice.lib.utils.ImageLoader;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -59,6 +60,13 @@ public class ApplicationModule
     @Singleton
     ApiClient provideApiClient(OkHttpClient client)
     {
-        return new ApiClient(client, "https://api.mecenate.org");
+        return new ApiClient(client, "https://boiling-escarpment-2702.herokuapp.com");
+    }
+
+    @Provides
+    @Singleton
+    ImageLoader provideImageLoader(Context context)
+    {
+        return new ImageLoader(context);
     }
 }

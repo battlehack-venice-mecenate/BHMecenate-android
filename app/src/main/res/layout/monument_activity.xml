@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/monument_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            tools:background="@color/material_cyan_200"
+            />
+
+        <TextView
+            android:id="@+id/monument_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MonumentText.Title"
+            tools:text="Monument name"
+            />
+
+        <TextView
+            android:id="@+id/monument_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MonumentText.Description"
+            tools:text="bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla"
+            />
+
+        <Button
+            android:id="@+id/monument_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="I want to donate!"/>
+
+    </LinearLayout>
+
+</ScrollView>

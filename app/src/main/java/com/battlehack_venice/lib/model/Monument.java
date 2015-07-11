@@ -21,6 +21,8 @@ public class Monument implements Serializable
                         .setName(object.getString("name"))
                         .setDescription(object.getString("description"))
                         .setImageUrl(object.getString("image_url"))
+                        .setLat(object.getDouble("lat"))
+                        .setLon(object.getDouble("lon"))
                         .setTotalDonations(object.getInt("total_donations_in_cents"));
 
             } catch (Exception e) {
@@ -35,6 +37,8 @@ public class Monument implements Serializable
     private String _imageUrl;
     private String _description;
     private int _totalDonations; // in cents
+    private double _lat;
+    private double _lon;
 
     public Monument(long id)
     {
@@ -108,6 +112,28 @@ public class Monument implements Serializable
     public Monument addDonation(int donation)
     {
         this._totalDonations += donation;
+        return this;
+    }
+
+    public double getLat()
+    {
+        return this._lat;
+    }
+
+    public Monument setLat(double lat)
+    {
+        this._lat = lat;
+        return this;
+    }
+
+    public double getLon()
+    {
+        return this._lon;
+    }
+
+    public Monument setLon(double lon)
+    {
+        this._lon = lon;
         return this;
     }
 }

@@ -37,7 +37,7 @@ public class ImageLoader
 
     private void _loadImage(Context context, String image, ImageView imageView)
     {
-        Log.i("IMAGELOADER", ""+image+" into "+imageView);
+        //Log.i("IMAGELOADER", ""+image+" into "+imageView);
 
         Glide.with(this._context)
                 .load(image)

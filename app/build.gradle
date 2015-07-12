@@ -72,5 +72,4 @@ dependencies {
     compile 'com.braintreepayments.api:braintree:1.6.4'
     compile 'com.loopj.android:android-async-http:1.4.7'
     compile 'com.google.android.gms:play-services:7.5.0'
-    compile 'com.google.android.gms:play-services-wallet:+'
 }

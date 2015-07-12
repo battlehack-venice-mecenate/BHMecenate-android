@@ -22,6 +22,7 @@ import com.battlehack_venice.mecenate.monument.MonumentActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,14 +47,12 @@ public class MainActivity extends BaseActivity implements GoogleMap.OnMarkerClic
 
     @InjectView(R.id.list)
     RecyclerView _list;
-    SupportMapFragment _map;
+    GoogleMap _map; // Might be null if Google Play services APK is not available.
 
     @Inject
     ApiClient _apiClient;
-
     private MonumentsAdapter _adapter;
     private Subscription _subscription;
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Map<Marker, Monument> allMarkersMap = new HashMap<Marker, Monument>();
 
     @Override
@@ -134,7 +133,7 @@ public class MainActivity extends BaseActivity implements GoogleMap.OnMarkerClic
         this._subscription = this._apiClient.get("/pois", null, new ApiResponseListParser<>(Monument.PARSER, "pois"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CustomSubscriber(this._adapter, this.mMap));
+                .subscribe(new CustomSubscriber(this._adapter, this._map));
     }
 
     private class CustomSubscriber extends Subscriber<List<Monument>>
@@ -175,12 +174,12 @@ public class MainActivity extends BaseActivity implements GoogleMap.OnMarkerClic
     private void setUpMapIfNeeded()
     {
         // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
+        if (_map == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+            _map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
 
-            if (mMap != null) {
+            if (_map != null) {
                 setUpMap();
             }
         }
@@ -188,37 +187,36 @@ public class MainActivity extends BaseActivity implements GoogleMap.OnMarkerClic
 
     private void setUpMap()
     {
-        mMap.setOnMarkerClickListener(this);
+        _map.setOnMarkerClickListener(this);
 
         // Enable MyLocation Layer of Google Map
-        mMap.setMyLocationEnabled(true);
+        _map.setMyLocationEnabled(true);
 
         // Get LocationManager object from System Service LOCATION_SERVICE
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        // Create a criteria object to retrieve provider
-        Criteria criteria = new Criteria();
-
-        // Get the name of the best provider
-        String provider = locationManager.getBestProvider(criteria, true);
-
         // Get Current Location
-        Location myLocation = locationManager.getLastKnownLocation(provider);
-        if (myLocation != null) {
-            // Get latitude of the current location
-            double latitude = myLocation.getLatitude();
-            double longitude = myLocation.getLongitude();
+        //Criteria criteria = new Criteria();
+        //String provider = locationManager.getBestProvider(criteria, true);
+        //Location myLocation = locationManager.getLastKnownLocation(provider);
+        // DEMO:
+        Location myLocation = null;
 
-            // Create a LatLng object for the current location
-            LatLng latLng = new LatLng(latitude, longitude);
+        double latitude = (myLocation != null) ? myLocation.getLatitude() : 45.433741;
+        double longitude = (myLocation != null) ? myLocation.getLongitude() : 12.337763;
 
-            // Show the current location in Google Map
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        // Show the current location in Google Map
+        LatLng latLng = new LatLng(latitude, longitude);
+        _map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
-            // Zoom in the Google Map
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
-            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!").snippet("Consider yourself located"));
-        }
+        // Zoom in the Google Map
+        _map.animateCamera(CameraUpdateFactory.zoomTo(16));
+        _map.addMarker(new MarkerOptions()
+                .position(new LatLng(latitude, longitude))
+                .title("You are here!")
+                .snippet("Consider yourself located")
+                .icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
     }
 
     private boolean _mapModeEnabled()
@@ -227,7 +225,8 @@ public class MainActivity extends BaseActivity implements GoogleMap.OnMarkerClic
     }
 
     @Override
-    public boolean onMarkerClick(final Marker marker) {
+    public boolean onMarkerClick(final Marker marker)
+    {
 
         Monument monument = allMarkersMap.get(marker);
         if (monument == null) {

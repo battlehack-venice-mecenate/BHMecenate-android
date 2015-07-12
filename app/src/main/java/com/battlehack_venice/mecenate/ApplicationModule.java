@@ -42,7 +42,6 @@ public class ApplicationModule
         client.setFollowRedirects(false);
 
         // Setup cache
-        // TODO: adjust size and folder
         final long HTTP_CACHE_SIZE = 10 * 1024 * 1024; // 10 MiB
         File cacheDir = context.getDir("http_cache", Context.MODE_PRIVATE);
 
@@ -60,7 +59,10 @@ public class ApplicationModule
     @Singleton
     ApiClient provideApiClient(OkHttpClient client)
     {
-        return new ApiClient(client, "https://boiling-escarpment-2702.herokuapp.com");
+        return new ApiClient(client,
+                "https://mecenate-api.herokuapp.com"
+                //"http://27d1a293.ngrok.com"
+        );
     }
 
     @Provides

@@ -215,8 +215,7 @@ public class MainActivity extends BaseActivity implements GoogleMap.OnMarkerClic
                 .position(new LatLng(latitude, longitude))
                 .title("You are here!")
                 .snippet("Consider yourself located")
-                .icon(BitmapDescriptorFactory
-                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
     }
 
     private boolean _mapModeEnabled()

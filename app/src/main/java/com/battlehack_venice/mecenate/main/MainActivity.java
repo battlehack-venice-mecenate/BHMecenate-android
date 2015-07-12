@@ -2,7 +2,6 @@ package com.battlehack_venice.mecenate.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;

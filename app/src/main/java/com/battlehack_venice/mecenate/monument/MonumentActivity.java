@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -85,39 +86,54 @@ public class MonumentActivity extends BaseActivity
         ButterKnife.inject(this);
         Application.injector().inject(this);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         if (getIntent() != null) {
 
             Monument monument = (Monument) getIntent().getSerializableExtra(EXTRA_MONUMENT);
             this._hydrate(monument);
+            this._preparePaypalTransaction();
             this._reload(monument);
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void _reload(Monument monument)
     {
-        this._reloadSubscription = this._apiClient.get("/pois/"+monument.getId(), null, new ApiResponseEntityParser<Monument>(Monument.PARSER, "monument"))
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Monument>()
-        {
-            @Override
-            public void onCompleted()
-            {
-                // Nothing
-            }
+        this._reloadSubscription = this._apiClient.get("/pois/" + monument.getId(), null, new ApiResponseEntityParser<Monument>(Monument.PARSER, "poi"))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Monument>()
+                {
+                    @Override
+                    public void onCompleted()
+                    {
+                        // Nothing
+                    }
 
-            @Override
-            public void onError(Throwable e)
-            {
-                // TODO:
-            }
+                    @Override
+                    public void onError(Throwable e)
+                    {
+                        // TODO:
+                    }
 
-            @Override
-            public void onNext(Monument monument)
-            {
-                _hydrate(monument);
-            }
-        });
+                    @Override
+                    public void onNext(Monument monument)
+                    {
+                        _hydrate(monument);
+                    }
+                });
     }
 
     @Override
@@ -150,9 +166,7 @@ public class MonumentActivity extends BaseActivity
 
         String collected = monument.getTotalDonations() > 0 ? String.format("Collected $ %.2f", monument.getTotalDonations() / 100.0f) : "No donations yet. Be the first!";
         String target = String.format("Target $ %.2f", monument.getTarget() / 100.0f);
-        this._donations.setText(collected+". "+target);
-
-        this._preparePaypalTransaction();
+        this._donations.setText(collected + ". " + target);
     }
 
     private void _preparePaypalTransaction()

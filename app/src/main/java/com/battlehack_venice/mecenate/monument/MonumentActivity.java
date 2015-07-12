@@ -148,7 +148,10 @@ public class MonumentActivity extends BaseActivity
         this._name.setText(monument.getName());
         this._description.setText(monument.getDescription());
         this._imageLoader.loadImage(monument.getImageUrl(), this._coverImage);
-        this._donations.setText(monument.getTotalDonations() > 0 ? String.format("Collected %.2f", monument.getTotalDonations() / 100.0f) : "No donations yet. Be the first!");
+
+        String collected = monument.getTotalDonations() > 0 ? String.format("Collected $ %.2f", monument.getTotalDonations() / 100.0f) : "No donations yet. Be the first!";
+        String target = String.format("Target $ %.2f", monument.getTarget() / 100.0f);
+        this._donations.setText(collected+". "+target);
 
         this._preparePaypalTransaction();
     }

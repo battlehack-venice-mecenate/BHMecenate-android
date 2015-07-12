@@ -23,7 +23,8 @@ public class Monument implements Serializable
                         .setImageUrl(object.getString("image_url"))
                         .setLat(object.getDouble("lat"))
                         .setLon(object.getDouble("lon"))
-                        .setTotalDonations(object.getInt("total_donations_in_cents"));
+                        .setTotalDonations(object.optInt("total_donations_in_cents", 0))
+                        .setTarget(object.optInt("target_in_cents", 0));
 
             } catch (Exception e) {
                 return null;
@@ -37,6 +38,7 @@ public class Monument implements Serializable
     private String _imageUrl;
     private String _description;
     private int _totalDonations; // in cents
+    private int _target; // in cents
     private double _lat;
     private double _lon;
 
@@ -134,6 +136,17 @@ public class Monument implements Serializable
     public Monument setLon(double lon)
     {
         this._lon = lon;
+        return this;
+    }
+
+    public int getTarget()
+    {
+        return this._target;
+    }
+
+    public Monument setTarget(int target)
+    {
+        this._target = target;
         return this;
     }
 }
